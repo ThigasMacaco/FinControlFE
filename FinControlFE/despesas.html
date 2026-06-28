@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinControl — Despesas</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+</head>
+<body>
+  <div id="sidebar-slot"></div>
+
+  <div class="main">
+    <div id="topbar-slot"></div>
+
+    <div class="page-content">
+      <div class="container" style="max-width:980px;">
+        <div class="empty-card">
+          <h2 style="color:var(--azul);margin-bottom:8px;">Despesas</h2>
+
+          <div class="row" style="margin-top:10px;">
+            <div style="flex:1;min-width:180px;">
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Mês</label>
+              <input id="d-mes" placeholder="(opcional) 1-12" />
+            </div>
+            <div style="flex:1;min-width:180px;">
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Ano</label>
+              <input id="d-ano" placeholder="(opcional) 2026" />
+            </div>
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:12px;align-items:center;justify-content:flex-end;">
+            <button class="btn btn-outline" type="button" onclick="logout()"><i class="fa fa-sign-out-alt"></i> Sair</button>
+            <button class="btn btn-primary" type="button" onclick="carregar()"><i class="fa fa-search"></i> Gerar</button>
+          </div>
+
+          <div id="resultado" style="margin-top:18px;color:var(--cinza);">Carregue após plugar back-end.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="./app.js"></script>
+  <script src="./ui.js"></script>
+  <script>
+    exigirLogin();
+    iniciarLayout('despesas');
+
+    async function carregar() {
+      const mes = document.getElementById('d-mes').value.trim();
+      const ano = document.getElementById('d-ano').value.trim();
+      const params = new URLSearchParams();
+      if (mes) params.set('mes', mes);
+      if (ano) params.set('ano', ano);
+
+      const box = document.getElementById('resultado');
+      box.textContent = 'Carregando...';
+      try {
+        const data = await api(`/despesas?${params.toString()}`);
+        box.textContent = Array.isArray(data) ? `Encontradas ${data.length} despesas.` : 'Resposta inesperada do servidor.';
+      } catch (e) {
+        box.textContent = e.message;
+      }
+    }
+  </script>
+</body>
+</html>
+

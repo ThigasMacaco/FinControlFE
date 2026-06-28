@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinControl — Cartões</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+</head>
+<body>
+  <div id="sidebar-slot"></div>
+  <div class="main">
+    <div id="topbar-slot"></div>
+
+    <div class="page-content">
+      <div class="container" style="max-width:980px;">
+        <div class="empty-card">
+          <h2 style="color:var(--azul);margin-bottom:8px;">Cartões</h2>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Nome</label>
+              <input id="c-nome" placeholder="Ex.: Nubank" />
+            </div>
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Limite</label>
+              <input id="c-limite" type="number" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Dia vencimento</label>
+              <input id="c-dia-venc" type="number" placeholder="10" />
+            </div>
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Dia fechamento</label>
+              <input id="c-dia-fech" type="number" placeholder="5" />
+            </div>
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:12px;align-items:center;justify-content:flex-end;">
+            <button class="btn btn-outline" type="button" onclick="logout()"><i class="fa fa-sign-out-alt"></i> Sair</button>
+            <button class="btn btn-primary" type="button" onclick="criar()"><i class="fa fa-plus"></i> Cadastrar</button>
+            <button class="btn btn-outline" type="button" onclick="carregar()"><i class="fa fa-search"></i> Listar</button>
+          </div>
+
+          <div id="resultado" style="margin-top:18px;color:var(--cinza);">Carregue após plugar back-end.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="./app.js"></script>
+  <script src="./ui.js"></script>
+  <script>
+    exigirLogin();
+    iniciarLayout('cartoes');
+
+    async function carregar() {
+      const box = document.getElementById('resultado');
+      box.textContent = 'Carregando...';
+      try {
+        const data = await api('/cartoes');
+        box.textContent = Array.isArray(data) ? `Encontrados ${data.length} cartões.` : 'Resposta inesperada do servidor.';
+      } catch (e) {
+        box.textContent = e.message;
+      }
+    }
+
+    async function criar() {
+      const nome = document.getElementById('c-nome').value.trim();
+      const limite = parseFloat(document.getElementById('c-limite').value);
+      const dia_vencimento = document.getElementById('c-dia-venc').value.trim();
+      const dia_fechamento = document.getElementById('c-dia-fech').value.trim();
+
+      if (!nome || Number.isNaN(limite)) {
+        toast('Informe nome e limite.', 'erro');
+        return;
+      }
+
+      try {
+        await api('/cartoes', {
+          method: 'POST',
+          body: JSON.stringify({
+            nome,
+            limite,
+            dia_vencimento: dia_vencimento || undefined,
+            dia_fechamento: dia_fechamento || undefined
+          })
+        });
+        toast('Cartão cadastrado!', 'sucesso');
+        carregar();
+      } catch (e) {
+        toast(e.message || 'Erro ao cadastrar cartão', 'erro');
+      }
+    }
+
+    carregar();
+  </script>
+</body>
+</html>
+

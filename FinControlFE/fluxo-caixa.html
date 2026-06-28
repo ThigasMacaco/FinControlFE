@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinControl — Fluxo de Caixa</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+</head>
+<body>
+  <div id="sidebar-slot"></div>
+  <div class="main">
+    <div id="topbar-slot"></div>
+
+    <div class="page-content">
+      <div class="container" style="max-width:980px;">
+        <div class="empty-card">
+          <h2 style="color:var(--azul);margin-bottom:8px;">Fluxo de Caixa</h2>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Mês</label>
+              <input id="f-mes" placeholder="(opcional) 1-12" />
+            </div>
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Ano</label>
+              <input id="f-ano" placeholder="(opcional) 2026" />
+            </div>
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:12px;align-items:center;justify-content:flex-end;">
+            <button class="btn btn-outline" type="button" onclick="logout()"><i class="fa fa-sign-out-alt"></i> Sair</button>
+            <button class="btn btn-primary" type="button" onclick="carregar()"><i class="fa fa-filter"></i> Filtrar</button>
+          </div>
+
+          <div id="resultado" style="margin-top:18px;color:var(--cinza);">Carregue após plugar back-end.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="./app.js"></script>
+  <script src="./ui.js"></script>
+  <script>
+    exigirLogin();
+    iniciarLayout('fluxo');
+
+    async function carregar() {
+      const mes = document.getElementById('f-mes').value.trim();
+      const ano = document.getElementById('f-ano').value.trim();
+      const params = new URLSearchParams();
+      if (mes) params.set('mes', mes);
+      if (ano) params.set('ano', ano);
+
+      const box = document.getElementById('resultado');
+      box.textContent = 'Carregando...';
+      try {
+        const data = await api(`/fluxo-caixa?${params.toString()}`);
+        const entradas = data.total_entradas ?? 0;
+        const saidas = data.total_saidas ?? 0;
+        box.innerHTML = `Entradas: <b>${formatMoeda(entradas)}</b> | Saídas: <b>${formatMoeda(saidas)}</b>`;
+      } catch (e) {
+        box.textContent = e.message;
+      }
+    }
+
+    carregar();
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinControl — Login</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-box">
+      <div class="login-logo">
+        <img src="assets/logo.png" alt="FinControl Logo" />
+        <h1>FinControl</h1>
+        <p>Gerenciamento Financeiro Inteligente</p>
+      </div>
+
+      <div class="login-tabs">
+        <button class="login-tab ativo" type="button" data-tab="login" onclick="AuthUI.mostrarTab('login')">Entrar</button>
+        <button class="login-tab" type="button" data-tab="cadastro" onclick="AuthUI.mostrarTab('cadastro')">Cadastrar</button>
+      </div>
+
+      <form id="form-login" class="form" onsubmit="AuthUI.fazerLogin(event)">
+        <div class="form-group">
+          <label><i class="fa fa-envelope"></i> E-mail</label>
+          <input type="email" id="login-email" placeholder="seu@email.com" required />
+        </div>
+        <div class="form-group">
+          <label><i class="fa fa-lock"></i> Senha</label>
+          <input type="password" id="login-senha" placeholder="••••••••" required />
+        </div>
+
+        <p class="link-row">
+          <a href="#" onclick="AuthUI.abrirRecuperarSenha(event)" class="link">Esqueci minha senha</a>
+        </p>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;" id="btn-login">
+          <i class="fa fa-sign-in-alt"></i> Entrar
+        </button>
+      </form>
+
+      <form id="form-cadastro" class="form" style="display:none" onsubmit="AuthUI.fazerCadastro(event)">
+        <div class="form-group">
+          <label><i class="fa fa-user"></i> Nome completo</label>
+          <input type="text" id="cad-nome" placeholder="Seu nome" required />
+        </div>
+        <div class="form-group">
+          <label><i class="fa fa-envelope"></i> E-mail</label>
+          <input type="email" id="cad-email" placeholder="seu@email.com" required />
+        </div>
+        <div class="form-group">
+          <label><i class="fa fa-lock"></i> Senha</label>
+          <input type="password" id="cad-senha" placeholder="Mínimo 6 caracteres" required minlength="6" />
+        </div>
+        <div class="form-group">
+          <label><i class="fa fa-building"></i> Tipo de conta</label>
+          <select id="cad-tipo" required>
+            <option value="fisica">👤 Pessoa Física</option>
+            <option value="empresa">🏢 Empresa / MEI</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;" id="btn-cad">
+          <i class="fa fa-user-plus"></i> Criar conta
+        </button>
+      </form>
+
+      <p class="copy">&copy; 2026 FinControl — TCC</p>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Recuperar senha (modal simples) -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Recuperar senha</h2>
+        <button class="modal-close" type="button" onclick="AuthUI.fecharModal()" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="form-group">
+        <label><i class="fa fa-envelope"></i> Informe seu e-mail</label>
+        <input type="email" id="rs-email" placeholder="seu@email.com" />
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" onclick="AuthUI.fecharModal()">Cancelar</button>
+        <button class="btn btn-primary" type="button" onclick="AuthUI.enviarRecuperacao()">
+          <i class="fa fa-paper-plane"></i> Enviar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+

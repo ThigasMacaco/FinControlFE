@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinControl — Dashboard</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+</head>
+<body>
+  <div id="sidebar-slot"></div>
+
+  <div class="main">
+    <div id="topbar-slot"></div>
+
+    <div class="page-content">
+      <div class="container" style="max-width:980px;">
+        <div class="empty-card">
+          <h2 style="color:var(--azul);margin-bottom:8px;">Dashboard</h2>
+          <p style="color:var(--cinza);margin-bottom:0;">
+            Página placeholder. Ao plugar o back-end e o banco, esta tela exibirá os dados do
+            <b>GET /api/dashboard</b>.
+          </p>
+
+          <div class="row" style="margin-top:14px;">
+            <span class="pill">Autenticação via token</span>
+            <span class="pill">Fetch via app.js</span>
+            <span class="pill">Endpoint: /api/dashboard</span>
+          </div>
+
+          <div style="margin-top:18px;display:flex;gap:12px;align-items:center;">
+            <button class="btn btn-outline" type="button" onclick="logout()">
+              <i class="fa fa-sign-out-alt"></i> Sair
+            </button>
+          </div>
+
+          <div id="resultado" style="margin-top:18px;color:var(--cinza);">Carregue após plugar back-end.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="./app.js"></script>
+  <script src="./ui.js"></script>
+  <script>
+    exigirLogin();
+    iniciarLayout('dashboard');
+
+    // placeholder do carregamento
+    async function carregar() {
+      const box = document.getElementById('resultado');
+      if (!box) return;
+      box.textContent = 'Carregando...';
+      try {
+        const data = await api('/dashboard');
+        box.textContent = data ? 'Backend conectado! Dashboard pronto.' : 'Resposta inesperada.';
+      } catch (e) {
+        box.textContent = e.message;
+      }
+    }
+
+    carregar();
+  </script>
+</body>
+</html>
+

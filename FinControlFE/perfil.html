@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinControl — Meu Perfil</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+</head>
+<body>
+  <div id="sidebar-slot"></div>
+  <div class="main">
+    <div id="topbar-slot"></div>
+
+    <div class="page-content">
+      <div class="container" style="max-width:980px;">
+        <div class="empty-card">
+          <h2 style="color:var(--azul);margin-bottom:8px;">Meu Perfil</h2>
+          <p style="color:var(--cinza);margin-bottom:14px;">Placeholder para <b>/api/auth/me</b> e <b>/api/auth/perfil</b>.</p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Nome</label>
+              <input id="p-nome" />
+            </div>
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">E-mail</label>
+              <input id="p-email" type="email" />
+            </div>
+          </div>
+
+          <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Senha atual</label>
+              <input id="p-senha-atual" type="password" placeholder="necessária se mudar senha" />
+            </div>
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Nova senha</label>
+              <input id="p-nova-senha" type="password" placeholder="mínimo 6 caracteres" />
+            </div>
+          </div>
+
+          <div id="meta" style="margin-top:12px;color:var(--cinza);font-size:.9rem;">Carregando...</div>
+
+          <div style="margin-top:14px;display:flex;gap:12px;align-items:center;justify-content:flex-end;">
+            <button class="btn btn-outline" type="button" onclick="logout()"><i class="fa fa-sign-out-alt"></i> Sair</button>
+            <button class="btn btn-outline" type="button" onclick="carregarDados()"><i class="fa fa-sync"></i> Recarregar</button>
+            <button class="btn btn-primary" type="button" onclick="salvar()"><i class="fa fa-save"></i> Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="./app.js"></script>
+  <script src="./ui.js"></script>
+  <script>
+    exigirLogin();
+    iniciarLayout('perfil');
+
+    async function carregarDados() {
+      const meta = document.getElementById('meta');
+      meta.textContent = 'Carregando...';
+      try {
+        const me = await api('/auth/me');
+        document.getElementById('p-nome').value = me.nome || '';
+        document.getElementById('p-email').value = me.email || '';
+        meta.textContent = `ID: ${me.id || '-'} | Tipo: ${me.tipo_conta || '-'}`;
+      } catch (e) {
+        meta.textContent = e.message;
+      }
+    }
+
+    async function salvar() {
+      const nome = document.getElementById('p-nome').value.trim();
+      const email = document.getElementById('p-email').value.trim();
+      const senha_atual = document.getElementById('p-senha-atual').value;
+      const nova_senha = document.getElementById('p-nova-senha').value;
+
+      try {
+        await api('/auth/perfil', {
+          method: 'PUT',
+          body: JSON.stringify({
+            nome: nome || undefined,
+            email: email || undefined,
+            senha_atual: senha_atual || undefined,
+            nova_senha: nova_senha || undefined
+          })
+        });
+        toast('Perfil atualizado!', 'sucesso');
+        document.getElementById('p-senha-atual').value = '';
+        document.getElementById('p-nova-senha').value = '';
+        await carregarDados();
+      } catch (e) {
+        toast(e.message || 'Erro ao salvar perfil', 'erro');
+      }
+    }
+
+    carregarDados();
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinControl — Metas</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+</head>
+<body>
+  <div id="sidebar-slot"></div>
+  <div class="main">
+    <div id="topbar-slot"></div>
+
+    <div class="page-content">
+      <div class="container" style="max-width:980px;">
+        <div class="empty-card">
+          <h2 style="color:var(--azul);margin-bottom:8px;">Metas</h2>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Título</label>
+              <input id="m-titulo" placeholder="Ex.: Reserva de Emergência" />
+            </div>
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Valor alvo</label>
+              <input id="m-alvo" type="number" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <label style="display:block;font-size:.8rem;font-weight:800;margin-bottom:6px;">Prazo (YYYY-MM)</label>
+            <input id="m-prazo" placeholder="2026-12" />
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:12px;align-items:center;justify-content:flex-end;">
+            <button class="btn btn-outline" type="button" onclick="logout()"><i class="fa fa-sign-out-alt"></i> Sair</button>
+            <button class="btn btn-primary" type="button" onclick="criar()"><i class="fa fa-plus"></i> Criar</button>
+            <button class="btn btn-outline" type="button" onclick="carregar()"><i class="fa fa-search"></i> Listar</button>
+          </div>
+
+          <div id="resultado" style="margin-top:18px;color:var(--cinza);">Carregue após plugar back-end.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="./app.js"></script>
+  <script src="./ui.js"></script>
+  <script>
+    exigirLogin();
+    iniciarLayout('metas');
+
+    async function carregar() {
+      const box = document.getElementById('resultado');
+      box.textContent = 'Carregando...';
+      try {
+        const data = await api('/metas');
+        box.textContent = Array.isArray(data) ? `Encontradas ${data.length} metas.` : 'Resposta inesperada do servidor.';
+      } catch (e) {
+        box.textContent = e.message;
+      }
+    }
+
+    async function criar() {
+      const titulo = document.getElementById('m-titulo').value.trim();
+      const valor_alvo = parseFloat(document.getElementById('m-alvo').value);
+      const prazo = document.getElementById('m-prazo').value.trim();
+
+      if (!titulo || Number.isNaN(valor_alvo) || !prazo) {
+        toast('Informe título, valor alvo e prazo.', 'erro');
+        return;
+      }
+
+      try {
+        await api('/metas', {
+          method: 'POST',
+          body: JSON.stringify({ titulo, valor_alvo, prazo })
+        });
+        toast('Meta criada!', 'sucesso');
+        carregar();
+      } catch (e) {
+        toast(e.message || 'Erro ao criar meta', 'erro');
+      }
+    }
+
+    carregar();
+  </script>
+</body>
+</html>
+

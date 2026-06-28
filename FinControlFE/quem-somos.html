@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinControl — Quem Somos</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+</head>
+<body>
+  <div id="sidebar-slot"></div>
+  <div class="main">
+    <div id="topbar-slot"></div>
+
+    <div class="page-content">
+      <div class="container" style="max-width:980px;">
+        <div class="empty-card">
+          <h2 style="color:var(--azul);margin-bottom:6px;">Quem Somos</h2>
+          <p style="color:var(--cinza);line-height:1.5;">
+            O <b>FinControl</b> é um sistema de gerenciamento financeiro inteligente para organizar receitas,
+            despesas, cartões, investimentos e metas.
+          </p>
+
+          <div style="margin-top:18px;">
+            <h3 style="font-size:1rem;font-weight:900;color:var(--texto);margin-bottom:10px;">Quem somos nós</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;">
+              <div style="background:var(--branco);border-radius:12px;box-shadow:var(--sombra);padding:12px 14px;min-width:180px;">
+                <div style="font-weight:900;color:var(--texto);">Eloá Cristine</div>
+              </div>
+              <div style="background:var(--branco);border-radius:12px;box-shadow:var(--sombra);padding:12px 14px;min-width:180px;">
+                <div style="font-weight:900;color:var(--texto);">Gabriel Amorim</div>
+              </div>
+              <div style="background:var(--branco);border-radius:12px;box-shadow:var(--sombra);padding:12px 14px;min-width:180px;">
+                <div style="font-weight:900;color:var(--texto);">Laura Fogaça</div>
+              </div>
+              <div style="background:var(--branco);border-radius:12px;box-shadow:var(--sombra);padding:12px 14px;min-width:180px;">
+                <div style="font-weight:900;color:var(--texto);">Letícia Hummel</div>
+              </div>
+              <div style="background:var(--branco);border-radius:12px;box-shadow:var(--sombra);padding:12px 14px;min-width:180px;">
+                <div style="font-weight:900;color:var(--texto);">Lorran Cerqueira</div>
+              </div>
+              <div style="background:var(--branco);border-radius:12px;box-shadow:var(--sombra);padding:12px 14px;min-width:180px;">
+                <div style="font-weight:900;color:var(--texto);">Thiago Capucho</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:12px;justify-content:flex-end;">
+            <button class="btn btn-outline" type="button" onclick="logout()"><i class="fa fa-sign-out-alt"></i> Sair</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="./app.js"></script>
+  <script src="./ui.js"></script>
+  <script>
+    exigirLogin();
+    iniciarLayout('quem-somos');
+  </script>
+</body>
+</html>
+
